@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Classification de visages</h1>
+    <a href="{{ url_for('utilisateur.deconnexion') }}">Déconnexion</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category,message in messages %}
+            {% if category == 'upload' %}
+                {{ message }}
+            {% endif %}
+        {% endfor %}
+    {% endwith %}
+    <form class="form-inline" method="POST" enctype="multipart/form-data" action="{{ url_for('image.accueil') }}">
+        <label for="addImages" class="btn btn-default input-group-addon">
+            <input id="addImages" name="images" type="file" multiple>
+            Ajouter des images...
+        </label>
+        <input class="btn btn-primary" type="submit" value="Ajouter">
+    </form>
+    <label for="images">Images ajoutées :</label>
+    <div id="images">
+        {% for image in images %}
+            <img class="resize" src="{{ url_for('static', filename=image)}}"/>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,2 @@
+from site_classification_visages.formulaires.inscription import FormulaireInscription
+from site_classification_visages.formulaires.connexion import FormulaireConnexion

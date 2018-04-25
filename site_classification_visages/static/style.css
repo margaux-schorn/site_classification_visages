@@ -1,0 +1,15 @@
+/* -- Images -- */
+img{
+    display: inline-block;
+}
+.resize{
+    width:15%;
+}
+
+/* -- Messages -- */
+
+/* -- Formulaires -- */
+
+.form-errors{
+    color: red;
+}
