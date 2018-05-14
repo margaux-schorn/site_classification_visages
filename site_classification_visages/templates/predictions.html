@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Classification de visages</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category,message in messages %}
+            {% if category == 'upload' %}
+                {{ message }}
+            {% endif %}
+        {% endfor %}
+    {% endwith %}
+    <div id="images">
+        {% for image in images %}
+            <img class="resize img" src="{{ url_for('static', filename=image.url())}}"/>
+            <p>Résultats :</p>
+            {% for prediction in predictions[image.name] %}
+                <p>{{prediction[0]}}: {{prediction[1]}}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <form class="form-inline" method="POST" enctype="multipart/form-data" action="{{ url_for('image.accueil')}}">
+            <input class="btn btn-primary" type="submit" value="Retour à l'accueil">
+    </form>
+{% endblock %}

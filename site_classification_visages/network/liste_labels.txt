@@ -1,0 +1,11 @@
+homme
+femme
+yeux_ronds
+yeux_amandes
+nez_rond
+nez_pointu
+visage_rond
+visage_carre
+jeune
+age_moyen
+vieux

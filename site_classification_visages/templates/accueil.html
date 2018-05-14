@@ -11,17 +11,30 @@
             {% endif %}
         {% endfor %}
     {% endwith %}
-    <form class="form-inline" method="POST" enctype="multipart/form-data" action="{{ url_for('image.accueil') }}">
-        <label for="addImages" class="btn btn-default input-group-addon">
-            <input id="addImages" name="images" type="file" multiple>
-            Ajouter des images...
-        </label>
-        <input class="btn btn-primary" type="submit" value="Ajouter">
-    </form>
+    <div class="row">
+        <form class="col-md-6 col-lg-6 form-inline alignement-gauche colonne-centree" method="POST" enctype="multipart/form-data" action="{{ url_for('image.accueil') }}">
+            <div class="input-group">
+                <label id="browsebutton" for="addImages" class="btn btn-default input-group-addon browse-button">
+                    <input id="addImages" class="images-selector"  name="images" style="display:none;" type="file" multiple>
+                    Ajouter des images...
+                </label>
+                <input type="text" class="form-control" readonly>
+            </div>
+                <input class="btn btn-primary" type="submit" value="Ajouter">
+        </form>
+    </div>
     <label for="images">Images ajoutées :</label>
     <div id="images">
         {% for image in images %}
-            <img class="resize" src="{{ url_for('static', filename=image)}}"/>
+            <img class="resize img" src="{{ url_for('static', filename=image.url())}}"/>
         {% endfor %}
     </div>
+    {% if images|length > 0 %}
+        <form class="alignment-gauche" method="POST" enctype="multipart/form-data" action="{{ url_for('image.supprimer_images')}}">
+            <input class="btn btn-primary" type="submit" value="Supprimer les images">
+        </form>
+    {% endif %}
+    <form class="alignment-droit" method="POST" enctype="multipart/form-data" action="{{ url_for('image.prediction')}}">
+            <input class="btn btn-primary" type="submit" value="Classifier les images">
+    </form>
 {% endblock %}

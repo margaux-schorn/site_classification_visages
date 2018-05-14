@@ -6,10 +6,26 @@ img{
     width:15%;
 }
 
+/* -- Upload -- */
+.browse-button{
+    background-color: white;
+}
+
 /* -- Messages -- */
 
 /* -- Formulaires -- */
-
+.alignment-droit{
+    float: right;
+    margin-top: 10px
+}
+.alignment-gauche{
+    display: inline-block;
+    margin-top: 10px
+}
+.colonne-centree{
+    float: none;
+    margin: 0 auto;
+}
 .form-errors{
     color: red;
 }
