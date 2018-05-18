@@ -8,17 +8,30 @@ labels_path = 'site_classification_visages/network/liste_labels.txt'
 
 def analyser_images(images):
     resultats = {}
+    graph = charger_reseau()
+
     for img in images:
         path = 'site_classification_visages/static/{}'.format(img.url())
         print(path)
-        resultats[img.name] = obtenir_predictions(path)
+        resultats[img.name] = obtenir_predictions(path, graph)
 
     print(resultats)
 
     return resultats
 
 
-def obtenir_predictions(image_path):
+def charger_reseau():
+    with tf.Graph().as_default() as graph:
+        # Unpersists graph from file
+        with tf.gfile.FastGFile(graph_path, 'rb') as f:
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
+            _ = tf.import_graph_def(graph_def, name='')
+
+        return graph
+
+
+def obtenir_predictions(image_path, graph):
     # Read in the image_data
     resultats = []
     image = cv2.imread(image_path)
@@ -32,25 +45,18 @@ def obtenir_predictions(image_path):
     label_lines = [line.rstrip() for line
                    in tf.gfile.GFile(labels_path)]
 
-    with tf.Graph().as_default() as graph:
-        # Unpersists graph from file
-        with tf.gfile.FastGFile(graph_path, 'rb') as f:
-            graph_def = tf.GraphDef()
-            graph_def.ParseFromString(f.read())
-            _ = tf.import_graph_def(graph_def, name='')
+    # Feed the image_data as input to the graph and get first prediction
+    with tf.Session(graph=graph) as sess:
+        softmax_tensor = sess.graph.get_tensor_by_name('InceptionV3/Predictions/Reshape_1:0')
+        predictions = sess.run(softmax_tensor,{'input:0': image_data})
 
-        # Feed the image_data as input to the graph and get first prediction
-        with tf.Session(graph=graph) as sess:
-            softmax_tensor = sess.graph.get_tensor_by_name('InceptionV3/Predictions/Reshape_1:0')
-            predictions = sess.run(softmax_tensor,{'input:0': image_data})
-
-            # Sort to show labels of first prediction in order of confidence
-            top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
-            for node_id in top_k:
-                human_string = label_lines[node_id]
-                score = predictions[0][node_id]
-                score = "{:2.2f} %".format(score*100)
-                resultats.append((human_string, score))
-                print('%s (score = %s)' % (human_string, score))
+        # Sort to show labels of first prediction in order of confidence
+        top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
+        for node_id in top_k:
+            human_string = label_lines[node_id]
+            score = predictions[0][node_id]
+            score = "{:2.2f} %".format(score*100)
+            resultats.append((human_string, score))
+            print('%s (score = %s)' % (human_string, score))
 
     return resultats

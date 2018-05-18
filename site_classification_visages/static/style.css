@@ -1,9 +1,12 @@
 /* -- Images -- */
 img{
-    display: inline-block;
+    display: inline-block
 }
 .resize{
     width:15%;
+}
+.border{
+    margin: 5px;
 }
 
 /* -- Upload -- */
